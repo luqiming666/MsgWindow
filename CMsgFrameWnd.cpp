@@ -35,7 +35,7 @@ END_MESSAGE_MAP()
 // CMsgFrameWnd message handlers
 LONG CMsgFrameWnd::OnUserMsg(UINT wParam, LONG lParam)
 {
-	CString  strMsg = "Receive message using message map(FrameWnd): ";
+	CString  strMsg = "Received message using message map (CFrameWnd): ";
 	CString  strParam;
 	strParam.Format("Method %d!", wParam);
 	::AfxMessageBox(strMsg + strParam);

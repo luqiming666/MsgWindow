@@ -85,7 +85,9 @@ BOOL CMsgWindowDlg::OnInitDialog()
 	
 	// TODO: Add extra initialization here
 	// Method 1
+	//	method 1.1
 	mMsgWnd.Create(NULL, "Msg", WS_CHILD, CRect(0,0,1,1), this, 0);
+	//	method 1.2
 	mMsgFrameWnd = new CMsgFrameWnd(); // creat window in heap
 	mMsgFrameWnd->Create(0, "Msg", WS_POPUPWINDOW, CRect(0,0,1,1), 0, 0);
 
@@ -185,7 +187,7 @@ LRESULT WINAPI NewWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (uMsg == WM_USER_MSG)
 	{
-		CString  strMsg = "Receive message using SetWindowLong: ";
+		CString  strMsg = "Received message using SetWindowLong: ";
 		CString  strParam;
 		strParam.Format("Method %d!", wParam);
 		::AfxMessageBox(strMsg + strParam);
@@ -239,7 +241,7 @@ LRESULT CALLBACK CallWndProc(int nCode, WPARAM wParam, LPARAM lParam)
 		if (pMsg->hwnd == gWindowMethod3.GetSafeHwnd() &&
 			pMsg->message == WM_USER_MSG)
 		{
-			CString  strMsg = "Receive message using Hook: ";
+			CString  strMsg = "Received message using Hook: ";
 			CString  strParam;
 			strParam.Format("Method %d!", pMsg->wParam);
 			::AfxMessageBox(strMsg + strParam);

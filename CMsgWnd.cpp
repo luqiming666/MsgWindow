@@ -38,7 +38,7 @@ END_MESSAGE_MAP()
 
 LRESULT CMsgWnd::OnUserMsg(WPARAM wParam, LPARAM lParam)
 {
-	CString  strMsg = "Receive message using message map(CommonWnd): ";
+	CString  strMsg = "Received message using message map (CWnd): ";
 	CString  strParam;
 	strParam.Format("Method %d!", wParam);
 	::AfxMessageBox(strMsg + strParam);
