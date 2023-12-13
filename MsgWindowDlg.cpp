@@ -160,7 +160,7 @@ void BuildInWindowMethod2(void)
 	// create an overlapped window with an MFC window class
 	LPCTSTR lpszClass = AfxRegisterWndClass(NULL);
 	HWND hWnd=::CreateWindow(lpszClass,             // windows class name
-						"Msg Hub",                  // window caption
+					"Msg Hub - unique",				// window caption
                     WS_OVERLAPPEDWINDOW,            // window style
                     CW_USEDEFAULT, CW_USEDEFAULT,   // position and dimensions
                     CW_USEDEFAULT, CW_USEDEFAULT,
@@ -183,6 +183,33 @@ void ReleaseWindowMethod2(void)
 	}
 }
 
+// 自定义数据结构
+struct MyData
+{
+	int value;
+	char message[256];
+};
+
+/*
+// 发送数据的函数
+void SendData(HWND receiver, MyData data)
+{
+	COPYDATASTRUCT cds;
+	cds.dwData = 0;
+	cds.cbData = sizeof(MyData);
+	cds.lpData = &data;
+
+	::SendMessage(receiver, WM_COPYDATA, 0, (LPARAM)&cds);
+}
+
+// 发送数据
+HWND receiver = ::FindWindow(0, L"Msg Hub - unique");
+MyData data;
+data.value = 42;
+strcpy_s(data.message, "Hello from Sender");
+SendData(receiver, data);
+*/
+
 LRESULT WINAPI NewWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (uMsg == WM_USER_MSG)
@@ -193,6 +220,16 @@ LRESULT WINAPI NewWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		::AfxMessageBox(strMsg + strParam);
 		return 1;
 	}
+	else if (uMsg == WM_COPYDATA) {
+		// Test IPC data-sharing
+		COPYDATASTRUCT* pcds = (COPYDATASTRUCT*)lParam;
+		MyData* data = (MyData*)pcds->lpData;
+		CString strMsg;
+		strMsg.Format("IPC Test - WM_COPYDATA: %d >> %s", data->value, data->message);
+		::AfxMessageBox(strMsg);
+		return 1;
+	}
+
 	return CallWindowProc(gOriginalProc,hWnd,uMsg,wParam,lParam);
 }
 ///////////////////////////////////////////////////////////////////////////////////
