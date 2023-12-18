@@ -53,8 +53,10 @@ protected:
 	afx_msg void OnButton2Sendmsg();
 	afx_msg void OnButton1Sendmsg2();
 	afx_msg void OnButton3Sendmsg();
+	afx_msg void OnBnClickedButton4Sendmsg();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -27,6 +27,12 @@ void BuildInWindowMethod3(void);
 void ReleaseWindowMethod3(void);
 LRESULT CALLBACK CallWndProc(int nCode, WPARAM wParam, LPARAM lParam);
 
+// Method 4: create an invisible window dedicated for messages
+HWND hwndInvisible = NULL;
+void CreateInvisibleMsgWindow();
+void ReleaseInvisibleMsgWindow();
+LRESULT CALLBACK InvisibleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 /////////////////////////////////////////////////////////////////////////////
 // CMsgWindowDlg dialog
 
@@ -50,6 +56,7 @@ CMsgWindowDlg::~CMsgWindowDlg()
 		mMsgFrameWnd = NULL;
 	}
 	ReleaseWindowMethod3();
+	ReleaseInvisibleMsgWindow();
 }
 
 void CMsgWindowDlg::DoDataExchange(CDataExchange* pDX)
@@ -65,6 +72,7 @@ BEGIN_MESSAGE_MAP(CMsgWindowDlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1_SENDMSG, OnButton1Sendmsg)
+	ON_BN_CLICKED(IDC_BUTTON4_SENDMSG, OnBnClickedButton4Sendmsg)
 	ON_BN_CLICKED(IDC_BUTTON2_SENDMSG, OnButton2Sendmsg)
 	ON_BN_CLICKED(IDC_BUTTON1_SENDMSG2, OnButton1Sendmsg2)
 	ON_BN_CLICKED(IDC_BUTTON3_SENDMSG, OnButton3Sendmsg)
@@ -96,6 +104,9 @@ BOOL CMsgWindowDlg::OnInitDialog()
 
 	// Method 3
 	BuildInWindowMethod3();
+
+	// Method 4
+	CreateInvisibleMsgWindow();
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -138,20 +149,17 @@ HCURSOR CMsgWindowDlg::OnQueryDragIcon()
 /////////////////////////////// Method 1 ///////////////////////////////////////////////
 void CMsgWindowDlg::OnButton1Sendmsg() 
 {
-	// TODO: Add your control notification handler code here
 	::SendMessage(mMsgWnd.GetSafeHwnd(), WM_USER_MSG, 1, 0);
 }
 
 void CMsgWindowDlg::OnButton1Sendmsg2() 
 {
-	// TODO: Add your control notification handler code here
 	::SendMessage(mMsgFrameWnd->GetSafeHwnd(), WM_USER_MSG, 1, 0);
 }
 
 /////////////////////////////// Method 2 ///////////////////////////////////////////////
 void CMsgWindowDlg::OnButton2Sendmsg() 
 {
-	// TODO: Add your control notification handler code here
 	::SendMessage(gWindowMethod2.GetSafeHwnd(), WM_USER_MSG, 2, 0);
 }
 
@@ -237,7 +245,6 @@ LRESULT WINAPI NewWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 //////////////////////////// Method 3 //////////////////////////////////////////////
 void CMsgWindowDlg::OnButton3Sendmsg() 
 {
-	// TODO: Add your control notification handler code here
 	::SendMessage(gWindowMethod3.GetSafeHwnd(), WM_USER_MSG, 3, 0);
 }
 
@@ -288,3 +295,63 @@ LRESULT CALLBACK CallWndProc(int nCode, WPARAM wParam, LPARAM lParam)
 	return CallNextHookEx(glhHook, nCode, wParam, lParam);
 }
 ///////////////////////////////////////////////////////////////////////////////////
+
+void CreateInvisibleMsgWindow()
+{
+	// 注册窗口类    
+	WNDCLASS wc = {};
+	wc.lpfnWndProc = InvisibleWndProc;
+	wc.hInstance = ::GetModuleHandle(NULL);
+	wc.lpszClassName = "InvisibleWindowClass";
+	RegisterClass(&wc);
+
+	// 创建看不见的窗口，关键参数：HWND_MESSAGE
+	// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowa
+	// A handle to the parent or owner window of the window being created.To create a child window or an owned window, 
+	// supply a valid window handle.This parameter is optional for pop - up windows.
+	// To create a message - only window, supply HWND_MESSAGE or a handle to an existing message - only window.
+	hwndInvisible = ::CreateWindow(wc.lpszClassName, "Invisible Window", 0, 0, 0, 0, 0, HWND_MESSAGE, 0, 0, 0);
+}
+
+void ReleaseInvisibleMsgWindow()
+{
+	if (hwndInvisible != NULL) {
+		::DestroyWindow(hwndInvisible);
+		hwndInvisible = NULL;
+	}
+}
+
+LRESULT CALLBACK InvisibleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (msg)
+	{
+		// 处理要接收的
+		case WM_COPYDATA:
+		{
+			COPYDATASTRUCT* cds = (COPYDATASTRUCT*)lParam;
+			// 在这里处理接收到的数据                
+			// ...
+		}
+		break;
+
+		case WM_USER_MSG:
+		{
+			CString  strMsg = "Received message in an invisible window: ";
+			CString  strParam;
+			strParam.Format("Method %d!", wParam);
+			::AfxMessageBox(strMsg + strParam);
+		}
+		break;
+
+		// 处理其他
+		default:
+			return DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+
+	return 0;
+}
+
+void CMsgWindowDlg::OnBnClickedButton4Sendmsg()
+{
+	::SendMessage(hwndInvisible, WM_USER_MSG, 4, 0);
+}
