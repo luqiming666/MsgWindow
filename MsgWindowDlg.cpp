@@ -72,10 +72,12 @@ BEGIN_MESSAGE_MAP(CMsgWindowDlg, CDialog)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1_SENDMSG, OnButton1Sendmsg)
+	ON_BN_CLICKED(IDC_BUTTON_TEST_MISC, OnBnClickedButtonTestMisc)
 	ON_BN_CLICKED(IDC_BUTTON4_SENDMSG, OnBnClickedButton4Sendmsg)
 	ON_BN_CLICKED(IDC_BUTTON2_SENDMSG, OnButton2Sendmsg)
 	ON_BN_CLICKED(IDC_BUTTON1_SENDMSG2, OnButton1Sendmsg2)
 	ON_BN_CLICKED(IDC_BUTTON3_SENDMSG, OnButton3Sendmsg)
+	ON_MESSAGE(WM_USER_MSG, OnReceivedCustomMessage)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -354,4 +356,15 @@ LRESULT CALLBACK InvisibleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
 void CMsgWindowDlg::OnBnClickedButton4Sendmsg()
 {
 	::SendMessage(hwndInvisible, WM_USER_MSG, 4, 0);
+}
+
+LRESULT CMsgWindowDlg::OnReceivedCustomMessage(WPARAM wParam, LPARAM lParam)
+{
+	::AfxMessageBox("MESSAGE_MAP works for the custom message. Really!!!");
+	return 0;
+}
+
+void CMsgWindowDlg::OnBnClickedButtonTestMisc()
+{
+	PostMessage(WM_USER_MSG);
 }

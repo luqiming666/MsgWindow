@@ -54,9 +54,13 @@ protected:
 	afx_msg void OnButton1Sendmsg2();
 	afx_msg void OnButton3Sendmsg();
 	afx_msg void OnBnClickedButton4Sendmsg();
+	afx_msg LRESULT OnReceivedCustomMessage(WPARAM wParam, LPARAM lParam);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
+public:
+	afx_msg void OnBnClickedButtonTest();
+	afx_msg void OnBnClickedButtonTestMisc();
 };
 
 //{{AFX_INSERT_LOCATION}}
