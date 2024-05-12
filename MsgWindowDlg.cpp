@@ -96,10 +96,10 @@ BOOL CMsgWindowDlg::OnInitDialog()
 	// TODO: Add extra initialization here
 	// Method 1
 	//	method 1.1
-	mMsgWnd.Create(NULL, "Msg", WS_CHILD, CRect(0,0,1,1), this, 0);
+	mMsgWnd.Create(NULL, _T("Msg"), WS_CHILD, CRect(0,0,1,1), this, 0);
 	//	method 1.2
 	mMsgFrameWnd = new CMsgFrameWnd(); // creat window in heap
-	mMsgFrameWnd->Create(0, "Msg", WS_POPUPWINDOW, CRect(0,0,1,1), 0, 0);
+	mMsgFrameWnd->Create(0, _T("Msg"), WS_POPUPWINDOW, CRect(0,0,1,1), 0, 0);
 
 	// Method 2
 	BuildInWindowMethod2();
@@ -170,7 +170,7 @@ void BuildInWindowMethod2(void)
 	// create an overlapped window with an MFC window class
 	LPCTSTR lpszClass = AfxRegisterWndClass(NULL);
 	HWND hWnd=::CreateWindow(lpszClass,             // windows class name
-					"Msg Hub - unique",				// window caption
+					_T("Msg Hub - unique"),			// window caption
                     WS_OVERLAPPEDWINDOW,            // window style
                     CW_USEDEFAULT, CW_USEDEFAULT,   // position and dimensions
                     CW_USEDEFAULT, CW_USEDEFAULT,
@@ -202,7 +202,7 @@ struct MyData
 
 /*
 // 发送数据的函数
-void SendData(HWND receiver, MyData data)
+void SendData(HWND receiver, MyData& data)
 {
 	COPYDATASTRUCT cds;
 	cds.dwData = 0;
@@ -255,7 +255,7 @@ void BuildInWindowMethod3(void)
 	// create an overlapped window with an MFC window class
 	LPCTSTR lpszClass = AfxRegisterWndClass(NULL);
 	HWND hWnd=::CreateWindow(lpszClass,             // windows class name
-						"Msg Hub",                  // window caption
+					_T("Msg Hub"),                  // window caption
                     WS_OVERLAPPEDWINDOW,            // window style
                     CW_USEDEFAULT, CW_USEDEFAULT,   // position and dimensions
                     CW_USEDEFAULT, CW_USEDEFAULT,
@@ -304,7 +304,7 @@ void CreateInvisibleMsgWindow()
 	WNDCLASS wc = {};
 	wc.lpfnWndProc = InvisibleWndProc;
 	wc.hInstance = ::GetModuleHandle(NULL);
-	wc.lpszClassName = "InvisibleWindowClass";
+	wc.lpszClassName = _T("InvisibleWindowClass");
 	RegisterClass(&wc);
 
 	// 创建看不见的窗口，关键参数：HWND_MESSAGE
@@ -312,7 +312,7 @@ void CreateInvisibleMsgWindow()
 	// A handle to the parent or owner window of the window being created.To create a child window or an owned window, 
 	// supply a valid window handle.This parameter is optional for pop - up windows.
 	// To create a message - only window, supply HWND_MESSAGE or a handle to an existing message - only window.
-	hwndInvisible = ::CreateWindow(wc.lpszClassName, "Invisible Window", 0, 0, 0, 0, 0, HWND_MESSAGE, 0, 0, 0);
+	hwndInvisible = ::CreateWindow(wc.lpszClassName, _T("Invisible Window"), 0, 0, 0, 0, 0, HWND_MESSAGE, 0, 0, 0);
 }
 
 void ReleaseInvisibleMsgWindow()
